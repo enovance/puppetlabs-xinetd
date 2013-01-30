@@ -16,9 +16,17 @@ class xinetd {
   file { '/etc/xinetd.conf':
     source => 'puppet:///modules/xinetd/xinetd.conf',
   }
-
+  case $operatingsystem {
+    'Debian': {
+        $hasstatus = false
+    }
+    default: {
+        $hasstatus = true
+    }
+  }
   service { 'xinetd':
     ensure  => running,
+    hasstatus => $hasstatus,
     enable  => true,
     restart => '/etc/init.d/xinetd reload',
     require => [ Package['xinetd'],
