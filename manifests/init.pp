@@ -41,11 +41,20 @@ class xinetd (
     before => Service[$service_name],
   }
 
+  case $operatingsystem {
+    'Debian': {
+        $hasstatus = false
+    }
+    default: {
+        $hasstatus = true
+    }
+  }
+
   service { $service_name:
     ensure     => running,
     enable     => true,
     hasrestart => false,
-    hasstatus  => true,
+    hasstatus  => $hasstatus,
     require    => File[$conffile],
   }
 
